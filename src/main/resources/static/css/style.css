@@ -1,0 +1,95 @@
+:root {
+    --bg-black: #0d0f0d;
+    --bg-dark: #141814;
+    --bg-card: #1b221b;
+    --flora-green: #20e070;
+    --flora-green-hover: #19b85a;
+    --border-color: #233827;
+}
+
+body {
+    background-color: var(--bg-black);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Utilitários de Cor */
+.bg-flora-black { background-color: var(--bg-black) !important; }
+.bg-flora-dark { background-color: var(--bg-dark) !important; }
+.bg-flora-card { background-color: var(--bg-card) !important; }
+.text-flora-green { color: var(--flora-green) !important; }
+
+.border-flora-green {
+    border-color: var(--border-color) !important;
+}
+
+/* Botões Customizados */
+.btn-flora-green {
+    background-color: var(--flora-green);
+    color: #000;
+    font-weight: 600;
+    border: none;
+}
+
+.btn-flora-green:hover {
+    background-color: var(--flora-green-hover);
+    color: #000;
+}
+
+.btn-flora-outline {
+    border: 1px solid var(--flora-green);
+    color: var(--flora-green);
+    font-weight: 500;
+}
+
+.btn-flora-outline:hover {
+    background-color: var(--flora-green);
+    color: #000;
+}
+
+.text-hover-green:hover {
+    color: var(--flora-green) !important;
+}
+
+/* Badges e Cards */
+.badge-flora {
+    background-color: rgba(32, 224, 112, 0.15);
+    color: var(--flora-green);
+    border: 1px solid var(--border-color);
+}
+
+.card {
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: var(--flora-green) !important;
+}
+
+.hero-icon {
+    filter: drop-shadow(0 0 15px rgba(32, 224, 112, 0.3));
+}
+
+/* Estilização dos Inputs e Formulários no Dark Mode */
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-dark) !important;
+    color: #fff !important;
+    border-color: var(--flora-green) !important;
+    box-shadow: 0 0 0 0.25rem rgba(32, 224, 112, 0.25) !important;
+}
+
+.form-control::placeholder {
+    color: #6c757d !important;
+}
+
+.input-group-text {
+    border-right: none !important;
+}
+
+.input-group .form-control {
+    border-left: none !important;
+}
+
+.style-card-auth {
+    border-radius: 12px;
+}
