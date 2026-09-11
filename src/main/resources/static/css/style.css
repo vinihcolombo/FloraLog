@@ -2,9 +2,17 @@
     --bg-black: #0d0f0d;
     --bg-dark: #141814;
     --bg-card: #1b221b;
-    --flora-green: #20e070;
-    --flora-green-hover: #19b85a;
-    --border-color: #233827;
+    --flora-green: #2ecc71;         /* Verde mais vivo e iluminado (ex: tom Esmeralda/Menta claro) */
+    --flora-green-hover: #27ae60;    /* Tom de hover um pouco mais encorpado */
+    --border-color: #27ae6055;       /* Verde com leve transparência para as bordas ficarem suaves */
+}
+
+/* Variáveis automáticas quando o site estiver no Modo Claro */
+[data-bs-theme="light"] {
+    --bg-black: #f4f9f5;           /* Um fundo branco com um toque bem sutil de verdinho claro */
+    --bg-dark: #e2ede5;
+    --bg-card: #ffffff;
+    --border-color: #a9dfbf;       /* Borda verde clara e elegante para o modo light */
 }
 
 body {

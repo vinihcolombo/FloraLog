@@ -42,18 +42,27 @@ public class PlantaController {
 
 
     @PostMapping
-    public ResponseEntity<PlantaModel> cadastrar(
+    public ResponseEntity<List<PlantaModel>> cadastrarUnica(
             @RequestBody PlantaModel planta
     ) {
-
-        PlantaModel plantaCriada =
-                plantaService.cadastrar(planta);
-
+        PlantaModel plantaCriada = plantaService.cadastrar(planta);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(plantaCriada);
+                .body(List.of(plantaCriada));
     }
 
+    @PostMapping("/lote")
+    public ResponseEntity<List<PlantaModel>> cadastrarLista(
+            @RequestBody List<PlantaModel> plantas
+    ) {
+        List<PlantaModel> plantasCriadas = new java.util.ArrayList<>();
+        for (PlantaModel planta : plantas) {
+            plantasCriadas.add(plantaService.cadastrar(planta));
+        }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(plantasCriadas);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<PlantaModel> atualizar(

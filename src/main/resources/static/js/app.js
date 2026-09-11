@@ -1,8 +1,8 @@
-const API_URL = 'http://localhost:8080/api/plantas';
+const API_URL = '/api/plantas';
+let plantasCache = []; // Guarda as plantas carregadas para poder filtrar no front sem refazer requisição
 
 document.addEventListener('DOMContentLoaded', () => {
     carregarPlantas();
-    
     document.getElementById('formPlanta').addEventListener('submit', salvarPlanta);
 });
 
@@ -10,11 +10,11 @@ async function carregarPlantas() {
     try {
         const response = await fetch(API_URL);
         if (response.ok) {
-            const plantas = await response.json();
-            renderizarCards(plantas);
+            plantasCache = await response.json();
+            renderizarCards(plantasCache);
         }
     } catch (error) {
-        console.log('Modo de visualização (Backend offline)');
+        console.error('Erro ao carregar plantas:', error);
     }
 }
 
@@ -22,8 +22,8 @@ function renderizarCards(plantas) {
     const grid = document.getElementById('gridPlantas');
     grid.innerHTML = '';
 
-    if (plantas.length === 0) {
-        grid.innerHTML = `<div class="col-12 text-center text-secondary py-5"><p>Nenhuma planta cadastrada ainda.</p></div>`;
+    if (!plantas || plantas.length === 0) {
+        grid.innerHTML = `<div class="col-12 text-center text-secondary py-5"><p>Nenhuma planta encontrada.</p></div>`;
         return;
     }
 
@@ -37,15 +37,15 @@ function renderizarCards(plantas) {
                         <span class="badge badge-flora">${p.categoria || 'Geral'}</span>
                         <span class="badge bg-success-subtle text-success border border-success-subtle">${p.nivelDificuldade || 'Fácil'}</span>
                     </div>
-                    <h4 class="card-title text-light fw-bold mb-1">${p.nomePopular || p.nome}</h4>
+                    <h4 class="card-title text-light fw-bold mb-1">${p.nomePopular || p.nome || ''}</h4>
                     <h6 class="card-subtitle mb-3 text-secondary fst-italic">${p.nomeCientifico || ''}</h6>
-                    
+
                     <ul class="list-unstyled text-secondary small mb-3">
                         <li class="mb-1"><i class="bi bi-sun text-flora-green me-2"></i><strong>Luz:</strong> ${p.iluminacao || 'N/A'}</li>
                         <li class="mb-1"><i class="bi bi-droplet text-flora-green me-2"></i><strong>Rega:</strong> ${p.rega || 'N/A'}</li>
                         <li class="mb-1"><i class="bi bi-thermometer-half text-flora-green me-2"></i><strong>Temp:</strong> ${p.temperatura || 'N/A'}</li>
                     </ul>
-                    
+
                     <p class="card-text text-secondary small border-top border-secondary pt-2 mt-2">
                         ${p.descricao || 'Sem orientações adicionais.'}
                     </p>
@@ -60,12 +60,56 @@ function renderizarCards(plantas) {
     });
 }
 
+// Preenche o modal com os dados da planta selecionada para edição
+function prepararEdicao(id) {
+    const planta = plantasCache.find(p => p.id === id);
+    if (!planta) return;
+
+    document.getElementById('plantaId').value = planta.id;
+    document.getElementById('nomePopular').value = planta.nomePopular || planta.nome || '';
+    document.getElementById('nomeCientifico').value = planta.nomeCientifico || '';
+    document.getElementById('categoria').value = planta.categoria || '';
+    document.getElementById('nivelDificuldade').value = planta.nivelDificuldade || 'Fácil';
+    document.getElementById('iluminacao').value = planta.iluminacao || '';
+    document.getElementById('rega').value = planta.rega || '';
+    document.getElementById('temperatura').value = planta.temperatura || '';
+    document.getElementById('descricao').value = planta.descricao || '';
+
+    const titulo = document.getElementById('modalTitulo');
+    if (titulo) titulo.innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Espécie';
+
+    const modalElement = document.getElementById('modalPlanta');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
+
+// Filtra dinamicamente na tela por nome, categoria ou nível de dificuldade
+function filtrarPlantas() {
+    const busca = document.getElementById('inputBusca').value.toLowerCase();
+    const dificuldade = document.getElementById('selectDificuldade').value;
+
+    const filtradas = plantasCache.filter(p => {
+        const nomeParaBusca = p.nomePopular || p.nome || '';
+        const atendeBusca =
+            nomeParaBusca.toLowerCase().includes(busca) ||
+            (p.nomeCientifico && p.nomeCientifico.toLowerCase().includes(busca)) ||
+            (p.categoria && p.categoria.toLowerCase().includes(busca));
+
+        const atendeDificuldade = !dificuldade || p.nivelDificuldade === dificuldade;
+
+        return atendeBusca && atendeDificuldade;
+    });
+
+    renderizarCards(filtradas);
+}
+
 async function salvarPlanta(event) {
     event.preventDefault();
 
     const id = document.getElementById('plantaId').value;
+
     const plantaData = {
-        nomePopular: document.getElementById('nomePopular').value,
+        nome: document.getElementById('nomePopular').value,
         nomeCientifico: document.getElementById('nomeCientifico').value,
         categoria: document.getElementById('categoria').value,
         nivelDificuldade: document.getElementById('nivelDificuldade').value,
@@ -88,10 +132,12 @@ async function salvarPlanta(event) {
         if (response.ok) {
             const modalElement = document.getElementById('modalPlanta');
             const modal = bootstrap.Modal.getInstance(modalElement);
-            modal.hide();
-            
+            if (modal) modal.hide();
+
             limparFormulario();
             carregarPlantas();
+        } else {
+            alert('Erro ao salvar. Verifique se preencheu todos os campos obrigatórios.');
         }
     } catch (error) {
         console.error('Erro ao salvar:', error);
@@ -114,5 +160,6 @@ async function excluirPlanta(id) {
 function limparFormulario() {
     document.getElementById('formPlanta').reset();
     document.getElementById('plantaId').value = '';
-    document.getElementById('modalTitulo').innerText = 'Cadastrar Espécie';
+    const titulo = document.getElementById('modalTitulo');
+    if (titulo) titulo.innerHTML = '<i class="bi bi-flower2 me-2"></i>Cadastrar Espécie';
 }
