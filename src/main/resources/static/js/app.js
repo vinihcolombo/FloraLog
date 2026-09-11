@@ -1,5 +1,5 @@
 const API_URL = '/api/plantas';
-let plantasCache = []; // Guarda as plantas carregadas para poder filtrar no front sem refazer requisição
+let plantasCache = []; 
 
 document.addEventListener('DOMContentLoaded', () => {
     carregarPlantas();
@@ -60,7 +60,6 @@ function renderizarCards(plantas) {
     });
 }
 
-// Preenche o modal com os dados da planta selecionada para edição
 function prepararEdicao(id) {
     const planta = plantasCache.find(p => p.id === id);
     if (!planta) return;
@@ -83,7 +82,6 @@ function prepararEdicao(id) {
     modal.show();
 }
 
-// Filtra dinamicamente na tela por nome, categoria ou nível de dificuldade
 function filtrarPlantas() {
     const busca = document.getElementById('inputBusca').value.toLowerCase();
     const dificuldade = document.getElementById('selectDificuldade').value;
