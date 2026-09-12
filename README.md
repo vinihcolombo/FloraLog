@@ -18,7 +18,7 @@ dificulta o acesso e o acompanhamento adequado.
 Essa falta de informação leva a cuidados inadequados, prejudica o desenvolvimento das
 plantas e contribui para a perda de espécies vegetais que poderiam ser preservadas.
 
-## 3. ODS — Objetivo de Desenvolvimento Sustentável
+## 2. ODS — Objetivo de Desenvolvimento Sustentável
 
 **ODS 15 — Vida Terrestre**, relacionado à proteção, recuperação e promoção do uso
 sustentável dos ecossistemas terrestres e à preservação da biodiversidade.
@@ -29,7 +29,7 @@ vida vegetal. Ao facilitar o acesso a informações que incentivam práticas ade
 cultivo, a plataforma contribui para a conscientização ambiental e para a preservação da
 biodiversidade.
 
-## 4. Tecnologias
+## 3. Tecnologias
 
 **Backend**
 - Java 21
@@ -49,7 +49,7 @@ biodiversidade.
 **Versionamento**
 - Git e GitHub
 
-## 5. Como executar
+## 4. Como executar
 
 ### Pré-requisitos
 
@@ -96,7 +96,7 @@ Relatório de cobertura: `target/site/jacoco/index.html`
 java -jar target/aep-0.0.1-SNAPSHOT.jar
 ```
 
-## 6. API
+## 5. API
 
 Base: `/api/plantas`
 
@@ -129,7 +129,7 @@ curl -X POST http://localhost:8080/api/plantas \
 Todos os campos são obrigatórios, exceto `descricao`. Requisições inválidas retornam
 `400 Bad Request` e ids inexistentes retornam `404 Not Found`.
 
-## 7. Estrutura do projeto
+## 6. Estrutura do projeto
 
 ```
 src/
