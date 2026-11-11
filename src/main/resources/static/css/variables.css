@@ -1,0 +1,15 @@
+:root {
+    --bg-black: #0d0f0d;
+    --bg-dark: #141814;
+    --bg-card: #1b221b;
+    --flora-green: #2ecc71;
+    --flora-green-hover: #27ae60;
+    --border-color: #27ae6055;
+}
+
+[data-bs-theme="light"] {
+    --bg-black: #f4f9f5;
+    --bg-dark: #e2ede5;
+    --bg-card: #ffffff;
+    --border-color: #a9dfbf;
+}
