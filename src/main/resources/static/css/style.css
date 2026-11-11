@@ -18,6 +18,12 @@
 body {
     background-color: var(--bg-black);
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+}
+
+/* --- SUPORTE GLOBAL PARA NAVBAR FIXA --- */
+header, .navbar {
+    z-index: 1030 !important;
 }
 
 /* Utilitários de Cor */
@@ -100,4 +106,115 @@ body {
 
 .style-card-auth {
     border-radius: 12px;
+}
+
+/* --- REGRAS ESPECÍFICAS PARA PÁGINAS COM SIDEBAR (EX: app.html) --- */
+body:has(aside) {
+    display: flex;
+    flex-direction: column;
+    padding-top: 70px !important;
+    padding-left: 260px !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: padding-left 0.3s ease;
+}
+
+body:has(aside.sidebar-minimizada) {
+    padding-left: 70px !important;
+}
+
+body:has(aside) header,
+body:has(aside) .navbar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 70px !important;
+}
+
+/* --- BARRA LATERAL (SIDEBAR) FIXA E RIGIDA À ESQUERDA --- */
+aside {
+    position: fixed !important;
+    top: 70px !important;
+    left: 0 !important;
+    height: calc(100vh - 70px) !important;
+    max-height: calc(100vh - 70px) !important;
+    z-index: 1020;
+    transition: width 0.3s ease, padding 0.3s ease;
+    width: 260px;
+    min-width: 260px;
+    max-width: 260px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+aside.sidebar-minimizada {
+    width: 70px !important;
+    min-width: 70px !important;
+    max-width: 70px !important;
+    padding-left: 0.4rem !important;
+    padding-right: 0.4rem !important;
+    overflow: hidden !important;
+}
+
+/* Evita que os textos e títulos da barra lateral quebrem linha */
+aside .nav-link span,
+aside .nav-link,
+aside span,
+aside p,
+aside h6 {
+    white-space: nowrap !important;
+}
+
+/* --- CORREÇÃO DOS LINKS AZUIS (FORÇA AS CORES CORRETAS DA SIDEBAR) --- */
+aside a,
+aside .nav-link,
+aside a:link,
+aside a:visited,
+aside a:active {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+/* Oculta completamente os textos e elementos textuais da sidebar ao minimizar */
+aside.sidebar-minimizada .sidebar-text,
+aside.sidebar-minimizada .input-group,
+aside.sidebar-minimizada h6,
+aside.sidebar-minimizada p,
+aside.sidebar-minimizada span:not(.nav-link i),
+aside.sidebar-minimizada .text-uppercase {
+    display: none !important;
+}
+
+/* Centraliza perfeitamente os ícones e elementos quando fechado */
+aside.sidebar-minimizada .nav-link,
+aside.sidebar-minimizada button,
+aside.sidebar-minimizada a {
+    justify-content: center !important;
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100% !important;
+}
+
+aside.sidebar-minimizada .nav-link i {
+    font-size: 1.3rem !important;
+    margin: 0 auto !important;
+}
+
+aside.sidebar-minimizada .btn {
+    width: 100% !important;
+    height: 40px !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+aside.sidebar-minimizada .btn span {
+    display: none !important;
 }

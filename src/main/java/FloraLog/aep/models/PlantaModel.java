@@ -1,14 +1,16 @@
 package FloraLog.aep.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.UUID;
 
-@Entity
+@Document(collection = "plantas")
 public class PlantaModel {
 
     @Id
     private String id;
 
+    private String usuarioId;
     private String nome;
     private String nomeCientifico;
     private String categoria;
@@ -17,11 +19,15 @@ public class PlantaModel {
     private String iluminacao;
     private String rega;
     private String temperatura;
+    private String fotoUrl;
+    private String codigoPartilha;
 
     public PlantaModel() {
+        this.codigoPartilha = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     public PlantaModel(
+            String usuarioId,
             String nome,
             String nomeCientifico,
             String categoria,
@@ -29,9 +35,10 @@ public class PlantaModel {
             String nivelDificuldade,
             String iluminacao,
             String rega,
-            String temperatura
+            String temperatura,
+            String fotoUrl
     ) {
-
+        this.usuarioId = usuarioId;
         this.nome = nome;
         this.nomeCientifico = nomeCientifico;
         this.categoria = categoria;
@@ -40,6 +47,8 @@ public class PlantaModel {
         this.iluminacao = iluminacao;
         this.rega = rega;
         this.temperatura = temperatura;
+        this.fotoUrl = fotoUrl;
+        this.codigoPartilha = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     public String getId() {
@@ -48,6 +57,14 @@ public class PlantaModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     public String getNome() {
@@ -112,5 +129,21 @@ public class PlantaModel {
 
     public void setTemperatura(String temperatura) {
         this.temperatura = temperatura;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
+
+    public String getCodigoPartilha() {
+        return codigoPartilha;
+    }
+
+    public void setCodigoPartilha(String codigoPartilha) {
+        this.codigoPartilha = codigoPartilha;
     }
 }

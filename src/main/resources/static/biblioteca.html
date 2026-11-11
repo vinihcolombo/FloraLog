@@ -1,10 +1,257 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🌿%3C/text%3E%3C/svg%3E">
+    <title>FloraWeb</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+
+    <script>
+        // Aplica o estado da sidebar instantaneamente antes de renderizar o corpo da página
+        if (localStorage.getItem('sidebarMinimizada') === 'true') {
+            document.documentElement.classList.add('sidebar-pre-minimizada');
+        }
+    </script>
 </head>
-<body>
-$END$
+<body class="bg-flora-black text-flora-main min-vh-100 d-flex flex-column">
+
+<!-- NAVBAR SUPERIOR -->
+<nav class="navbar navbar-dark bg-flora-black border-bottom border-flora-green py-2 px-3 sticky-top">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-outline-secondary btn-sm border-0 text-flora-green" id="btnToggleSidebar" title="Alternar Menu">
+                <i class="bi bi-list fs-4"></i>
+            </button>
+            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-flora-green fs-4 m-0" href="app.html">
+                <i class="bi bi-flower1 fs-3"></i> <span>FloraWeb</span>
+            </a>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-outline-secondary btn-sm border-flora-green text-flora-green" id="btnAlternarTema" onclick="alternarTema()" title="Alternar Tema">
+                <i id="iconeTema" class="bi bi-sun-fill"></i>
+            </button>
+
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle gap-2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img id="userAvatar" src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/person-circle.svg" alt="Avatar" class="rounded-circle border border-flora-green" width="38" height="38" style="object-fit: cover;">
+                    <div class="d-none d-md-block text-start">
+                        <span id="userName" class="d-block text-flora-main small fw-bold">Carregando...</span>
+                        <span id="userRole" class="d-block text-flora-muted extra-small">Colaborador</span>
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark bg-flora-card border-flora-green shadow">
+                    <li><a class="dropdown-item text-flora-main text-hover-green" href="#"><i class="bi bi-person me-2"></i> Meu Perfil</a></li>
+                    <li><hr class="dropdown-divider border-flora-green opacity-25"></li>
+                    <li><a class="dropdown-item text-danger" href="#" id="btnLogout"><i class="bi bi-box-arrow-right me-2"></i> Encerrar Sessão</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<!-- CORPO PRINCIPAL COM SIDEBAR E CONTEÚDO -->
+<div class="container-fluid flex-grow-1 d-flex p-0">
+
+    <aside id="sidebar" class="bg-flora-dark border-end border-flora-green p-3 d-flex flex-column transition-sidebar" style="min-height: calc(100vh - 65px);">
+        <ul class="nav nav-pills flex-column gap-1 mb-auto">
+            <li class="nav-item">
+                <a href="app.html" class="nav-link d-flex align-items-center gap-2 py-2">
+                    <i class="bi bi-speedometer2 fs-5 text-flora-green"></i>
+                    <span class="sidebar-text">Início / Painel</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="" class="nav-link active fw-bold d-flex align-items-center gap-2 py-2">
+                    <i class="bi bi-journal-richtext fs-5"></i>
+                    <span class="sidebar-text">Biblioteca Pessoal</span>
+                </a>
+            </li>
+            <li><hr class="border-flora-green opacity-25 my-2"></li>
+            <li class="px-2 text-flora-green extra-small fw-bold text-uppercase sidebar-text mb-1">
+                Hortas
+            </li>
+            <li>
+                <a href="horta-casa.html" class="nav-link d-flex align-items-center gap-2 py-2">
+                    <i class="bi bi-house-heart fs-5 text-flora-green"></i>
+                    <span class="sidebar-text">Horta Pessoal (Casa)</span>
+                </a>
+            </li>
+            <li>
+                <a href="hortas-privadas.html" class="nav-link d-flex align-items-center gap-2 py-2">
+                    <i class="bi bi-shield-lock fs-5 text-flora-green"></i>
+                    <span class="sidebar-text">Hortas Privadas</span>
+                </a>
+            </li>
+            <li>
+                <a href="hortas-comunitarias.html" class="nav-link d-flex align-items-center gap-2 py-2">
+                    <i class="bi bi-people fs-5 text-flora-green"></i>
+                    <span class="sidebar-text">Hortas Comunitárias</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="flex-grow-1 p-4 bg-flora-black overflow-y-auto">
+        <div class="container-fluid" id="conteudoDinamico">
+
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div>
+                    <h2 class="fw-bold text-flora-main">
+                        <i class="bi bi-journal-bookmark-fill me-2 text-flora-green"></i>Biblioteca Pessoal de Espécies
+                    </h2>
+                    <p class="text-flora-muted small mb-0">Consulte, cadastre e gerencie as orientações de cultivo das suas plantas.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary border-flora-green text-flora-main d-flex align-items-center gap-2 fw-bold shadow-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#modalAdicionarCodigo">
+                        <i class="bi bi-code-slash fs-5 text-flora-green"></i> Adicionar por Código
+                    </button>
+                    <button class="btn btn-flora-green d-flex align-items-center gap-2 fw-bold shadow-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#modalPlanta" onclick="limparFormulario()">
+                        <i class="bi bi-plus-lg fs-5"></i> Nova Espécie
+                    </button>
+                </div>
+            </div>
+
+            <!-- FILTROS COM BUSCA E SELECT NATIVO PADRÃO -->
+            <div class="card bg-flora-dark border border-flora-green shadow-sm mb-4 p-3 rounded-3">
+                <div class="row g-3">
+                    <!-- Input de Pesquisa -->
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-flora-black border-flora-green text-flora-green">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" id="inputBusca" class="form-control bg-flora-black border-flora-green text-flora-main shadow-none" placeholder="Pesquisar por nome popular, científico ou categoria..." onkeyup="filtrarPlantas()">
+                        </div>
+                    </div>
+
+                    <!-- Select Nativo Padrão -->
+                    <div class="col-lg-4">
+                        <select id="selectFiltroDificuldade" class="form-select bg-flora-black border-flora-green text-flora-main shadow-none" onchange="filtrarPlantas()">
+                            <option value="">Filtrar por Dificuldade (Todas)</option>
+                            <option value="Fácil">Fácil</option>
+                            <option value="Médio">Médio</option>
+                            <option value="Difícil">Difícil</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="gridPlantas" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4"></div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- Modal de Cadastro / Edição da Espécie -->
+<div class="modal fade" id="modalPlanta" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-flora-card border border-flora-green text-flora-main shadow-lg">
+            <div class="modal-header border-bottom border-flora-green py-3">
+                <h5 class="modal-title fw-bold text-flora-green" id="modalTitulo">
+                    <i class="bi bi-flower2 me-2"></i>Cadastrar Espécie
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formPlanta">
+                    <input type="hidden" id="plantaId">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="nomePopular" class="form-label small fw-semibold text-flora-muted">Nome Popular *</label>
+                            <input type="text" class="form-control bg-flora-black border-flora-green text-flora-main shadow-none" id="nomePopular" placeholder="Ex: Costela-de-Adão" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="nomeCientifico" class="form-label small fw-semibold text-flora-muted">Nome Científico</label>
+                            <input type="text" class="form-control bg-flora-black border-flora-green text-flora-main shadow-none" id="nomeCientifico" placeholder="Ex: Monstera deliciosa">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="categoria" class="form-label small fw-semibold text-flora-muted">Categoria</label>
+                            <input type="text" class="form-control bg-flora-black border-flora-green text-flora-main shadow-none" id="categoria" placeholder="Ex: Foliagem, Suculenta, Horta">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="nivelDificuldade" class="form-label small fw-semibold text-flora-muted">Dificuldade de Cultivo</label>
+                            <select class="form-select bg-flora-black border-flora-green text-flora-main shadow-none" id="nivelDificuldade">
+                                <option value="Fácil">Fácil</option>
+                                <option value="Médio">Médio</option>
+                                <option value="Difícil">Difícil</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label for="iluminacao" class="form-label small fw-semibold text-flora-muted">Iluminação</label>
+                            <input type="text" class="form-control bg-flora-black border-flora-green text-flora-main shadow-none" id="iluminacao" placeholder="Ex: Meia-sombra">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="rega" class="form-label small fw-semibold text-flora-muted">Frequência de Rega</label>
+                            <input type="text" class="form-control bg-flora-black border-flora-green text-flora-main shadow-none" id="rega" placeholder="Ex: 1 vez/semana">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="temperatura" class="form-label small fw-semibold text-flora-muted">Temperatura Ideal</label>
+                            <input type="text" class="form-control bg-flora-black border-flora-green text-flora-main shadow-none" id="temperatura" placeholder="Ex: 20°C a 30°C">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="descricao" class="form-label small fw-semibold text-flora-muted">Orientações de Cuidado / Descrição</label>
+                        <textarea class="form-control bg-flora-black border-flora-green text-flora-main shadow-none" id="descricao" rows="3" placeholder="Informações detalhadas sobre rega, poda e adubação..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top border-flora-green">
+                        <button type="button" class="btn btn-outline-secondary border-flora-green text-flora-main px-4" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-flora-green fw-bold px-4">Salvar Espécie</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Adicionar por Código de Partilha -->
+<div class="modal fade" id="modalAdicionarCodigo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content bg-flora-card border border-flora-green text-flora-main shadow-lg">
+            <div class="modal-header border-bottom border-flora-green py-3">
+                <h5 class="modal-title fw-bold text-flora-green">
+                    <i class="bi bi-code-slash me-2"></i>Adicionar Espécie por Código
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-flora-muted small">Insira abaixo o código de partilha da espécie para adicioná-la à sua biblioteca.</p>
+                <div class="mb-3">
+                    <label for="inputCodigoPartilha" class="form-label small fw-semibold text-flora-muted">Código de Partilha</label>
+                    <input type="text" class="form-control bg-flora-black border-flora-green text-flora-main shadow-none" id="inputCodigoPartilha" placeholder="Ex: FLORA-XXXX">
+                </div>
+                <div class="d-flex justify-content-end gap-2 pt-3 border-top border-flora-green">
+                    <button type="button" class="btn btn-outline-secondary border-flora-green text-flora-main px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-flora-green fw-bold px-4" onclick="importarPlantaPorCodigoUnico()">Importar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/biblioteca.js"></script>
 </body>
 </html>

@@ -1,0 +1,18 @@
+body {
+    background-color: var(--bg-black);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+}
+
+.bg-flora-black { background-color: var(--bg-black) !important; }
+.bg-flora-dark { background-color: var(--bg-dark) !important; }
+.bg-flora-card { background-color: var(--bg-card) !important; }
+.text-flora-green { color: var(--flora-green) !important; }
+
+.border-flora-green {
+    border-color: var(--border-color) !important;
+}
+
+.text-hover-green:hover {
+    color: var(--flora-green) !important;
+}

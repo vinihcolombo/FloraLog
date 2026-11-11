@@ -2,135 +2,84 @@ package FloraLog.aep.services;
 
 import FloraLog.aep.models.PlantaModel;
 import FloraLog.aep.repositories.PlantaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PlantaService {
 
-    private final PlantaRepository plantaRepository;
+    @Autowired
+    private PlantaRepository plantaRepository;
 
-    public PlantaService(PlantaRepository plantaRepository) {
-        this.plantaRepository = plantaRepository;
+    public List<PlantaModel> listarBibliotecaPorUsuario(String usuarioId) {
+        return plantaRepository.findByUsuarioId(usuarioId);
     }
 
-    public List<PlantaModel> listarTodas() {
-        return plantaRepository.findAll();
-    }
-
-    public PlantaModel buscarPorId(String id) {
-
-        return plantaRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Planta não encontrada")
-                );
-    }
-
-    public PlantaModel cadastrar(PlantaModel planta) {
-
-        validarPlanta(planta);
-
-        planta.setId(null);
-
+    public PlantaModel salvar(PlantaModel planta) {
+        if (planta.getCodigoPartilha() == null || planta.getCodigoPartilha().isEmpty()) {
+            planta.setCodigoPartilha(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        }
         return plantaRepository.save(planta);
     }
 
     public PlantaModel atualizar(String id, PlantaModel plantaAtualizada) {
+        Optional<PlantaModel> plantaExistente = plantaRepository.findById(id);
 
-        validarPlanta(plantaAtualizada);
+        if (plantaExistente.isPresent()) {
+            PlantaModel planta = plantaExistente.get();
+            planta.setNome(plantaAtualizada.getNome());
+            planta.setNomeCientifico(plantaAtualizada.getNomeCientifico());
+            planta.setCategoria(plantaAtualizada.getCategoria());
+            planta.setDescricao(plantaAtualizada.getDescricao());
+            planta.setNivelDificuldade(plantaAtualizada.getNivelDificuldade());
+            planta.setIluminacao(plantaAtualizada.getIluminacao());
+            planta.setRega(plantaAtualizada.getRega());
+            planta.setTemperatura(plantaAtualizada.getTemperatura());
 
-        PlantaModel plantaExistente = buscarPorId(id);
+            if (plantaAtualizada.getFotoUrl() != null) {
+                planta.setFotoUrl(plantaAtualizada.getFotoUrl());
+            }
 
-        plantaExistente.setNome(plantaAtualizada.getNome());
-        plantaExistente.setNomeCientifico(
-                plantaAtualizada.getNomeCientifico()
-        );
-        plantaExistente.setCategoria(
-                plantaAtualizada.getCategoria()
-        );
-        plantaExistente.setDescricao(
-                plantaAtualizada.getDescricao()
-        );
-        plantaExistente.setNivelDificuldade(
-                plantaAtualizada.getNivelDificuldade()
-        );
-        plantaExistente.setIluminacao(
-                plantaAtualizada.getIluminacao()
-        );
-        plantaExistente.setRega(
-                plantaAtualizada.getRega()
-        );
-        plantaExistente.setTemperatura(
-                plantaAtualizada.getTemperatura()
-        );
+            return plantaRepository.save(planta);
+        }
 
-        return plantaRepository.save(plantaExistente);
+        throw new RuntimeException("Planta não encontrada com o ID: " + id);
     }
 
-    public void excluir(String id) {
-
-        PlantaModel planta = buscarPorId(id);
-
-        plantaRepository.delete(planta);
+    public void deletar(String id) {
+        if (plantaRepository.existsById(id)) {
+            plantaRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Planta não encontrada para exclusão, ID: " + id);
+        }
     }
 
-    private void validarPlanta(PlantaModel planta) {
+    public PlantaModel buscarPorId(String id) {
+        return plantaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Planta não encontrada com o ID: " + id));
+    }
 
-        if (planta.getNome() == null ||
-                planta.getNome().isBlank()) {
+    public PlantaModel importarPorCodigo(String codigo, String usuarioId) {
+        PlantaModel plantaOriginal = plantaRepository.findByCodigoPartilha(codigo)
+                .orElseThrow(() -> new RuntimeException("Espécie não encontrada com este código."));
 
-            throw new IllegalArgumentException(
-                    "O nome da planta é obrigatório"
-            );
-        }
+        PlantaModel novaPlanta = new PlantaModel();
+        novaPlanta.setUsuarioId(usuarioId);
+        novaPlanta.setNome(plantaOriginal.getNome());
+        novaPlanta.setNomeCientifico(plantaOriginal.getNomeCientifico());
+        novaPlanta.setCategoria(plantaOriginal.getCategoria());
+        novaPlanta.setNivelDificuldade(plantaOriginal.getNivelDificuldade());
+        novaPlanta.setIluminacao(plantaOriginal.getIluminacao());
+        novaPlanta.setRega(plantaOriginal.getRega());
+        novaPlanta.setTemperatura(plantaOriginal.getTemperatura());
+        novaPlanta.setDescricao(plantaOriginal.getDescricao());
+        novaPlanta.setFotoUrl(plantaOriginal.getFotoUrl());
+        novaPlanta.setCodigoPartilha(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
 
-        if (planta.getNomeCientifico() == null ||
-                planta.getNomeCientifico().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "O nome científico é obrigatório"
-            );
-        }
-
-        if (planta.getCategoria() == null ||
-                planta.getCategoria().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "A categoria é obrigatória"
-            );
-        }
-
-        if (planta.getNivelDificuldade() == null ||
-                planta.getNivelDificuldade().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "O nível de dificuldade é obrigatório"
-            );
-        }
-
-        if (planta.getIluminacao() == null ||
-                planta.getIluminacao().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "A iluminação é obrigatória"
-            );
-        }
-
-        if (planta.getRega() == null ||
-                planta.getRega().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "A rega é obrigatória"
-            );
-        }
-
-        if (planta.getTemperatura() == null ||
-                planta.getTemperatura().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "A temperatura é obrigatória"
-            );
-        }
+        return plantaRepository.save(novaPlanta);
     }
 }

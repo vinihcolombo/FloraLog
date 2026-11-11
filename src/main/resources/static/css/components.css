@@ -1,0 +1,192 @@
+/* Botões principais */
+.btn-flora-green {
+    background-color: var(--flora-green);
+    color: #000;
+    font-weight: 600;
+    border: none;
+}
+
+.btn-flora-green:hover {
+    background-color: var(--flora-green-hover);
+    color: #000;
+}
+
+.btn-flora-outline {
+    border: 1px solid var(--flora-green);
+    color: var(--flora-green);
+    font-weight: 500;
+}
+
+.btn-flora-outline:hover {
+    background-color: var(--flora-green);
+    color: #000;
+}
+
+/* Badges e Cards */
+.badge-flora {
+    background-color: rgba(32, 224, 112, 0.15);
+    color: var(--flora-green);
+    border: 1px solid var(--border-color);
+}
+
+.card {
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: var(--flora-green) !important;
+}
+
+.hero-icon {
+    filter: drop-shadow(0 0 15px rgba(32, 224, 112, 0.3));
+}
+
+/* Inputs, Selects e Grupos */
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-dark) !important;
+    color: var(--flora-main) !important;
+    border-color: var(--flora-green) !important;
+    box-shadow: none !important;
+}
+
+.nav-link.active {
+    background-color: var(--flora-green) !important;
+    color: #000000 !important;
+    border: 1px solid var(--flora-green) !important;
+    font-weight: bold;
+}
+
+.nav-link.active i {
+    color: #000000 !important;
+}
+
+/* Estado padrão da Sidebar expandida */
+#sidebar {
+    width: 260px;
+    transition: width 0.3s ease;
+}
+
+/* Quando minimizada, reduz a largura */
+#sidebar.sidebar-minimizada {
+    width: 80px !important;
+}
+
+/* Esconde o texto dos itens quando a sidebar estiver minimizada */
+#sidebar.sidebar-minimizada .sidebar-text,
+#sidebar.sidebar-minimizada .custom-search-box,
+#sidebar.sidebar-minimizada hr,
+#sidebar.sidebar-minimizada .text-uppercase {
+    display: none !important;
+}
+
+/* Estado padrão da Sidebar expandida */
+#sidebar {
+    width: 260px !important;
+    min-width: 260px !important;
+    transition: width 0.3s ease, min-width 0.3s ease;
+    overflow: hidden;
+}
+
+/* Quando minimizada, reduz a largura bruscamente */
+#sidebar.sidebar-minimizada {
+    width: 80px !important;
+    min-width: 80px !important;
+}
+
+/* Esconde o texto e elementos internos quando minimizada */
+#sidebar.sidebar-minimizada .sidebar-text,
+#sidebar.sidebar-minimizada .custom-search-box,
+#sidebar.sidebar-minimizada hr,
+#sidebar.sidebar-minimizada .text-uppercase {
+    display: none !important;
+}
+
+/* Estado padrão da sidebar expandida */
+#sidebar {
+    width: 260px;
+    min-width: 260px;
+    transition: width 0.3s ease, min-width 0.3s ease;
+    overflow: hidden;
+}
+
+/* Quando estiver minimizada, encolhe para 80px */
+#sidebar.sidebar-minimizada {
+    width: 80px !important;
+    min-width: 80px !important;
+}
+
+/* Esconde os textos quando minimizada */
+#sidebar.sidebar-minimizada .sidebar-text,
+#sidebar.sidebar-minimizada .custom-search-box,
+#sidebar.sidebar-minimizada hr,
+#sidebar.sidebar-minimizada .text-uppercase {
+    display: none !important;
+}
+
+/* Estado padrão / expandida (sem !important na largura para permitir que a classe diminua) */
+#sidebar {
+    width: 260px;
+    min-width: 260px;
+    transition: width 0.3s ease, min-width 0.3s ease;
+    overflow: hidden;
+}
+
+/* Estado minimizada com prioridade usando a combinação de ID + classe */
+#sidebar.sidebar-minimizada {
+    width: 80px !important;
+    min-width: 80px !important;
+}
+
+/* Esconde os textos e elementos internos quando minimizada */
+#sidebar.sidebar-minimizada .sidebar-text,
+#sidebar.sidebar-minimizada .custom-search-box,
+#sidebar.sidebar-minimizada hr,
+#sidebar.sidebar-minimizada .text-uppercase {
+    display: none !important;
+}
+
+/* Regra para aplicar o estado minimizado instantaneamente antes do script carregar */
+html.sidebar-pre-minimizada #sidebar {
+    width: 80px !important;
+    min-width: 80px !important;
+}
+html.sidebar-pre-minimizada #sidebar .sidebar-text {
+    display: none !important;
+}
+
+.navbar a,
+.dropdown-menu a {
+    color: var(--flora-main);
+    text-decoration: none;
+}
+
+.navbar a:hover,
+.dropdown-menu a:hover {
+    color: var(--flora-green);
+}
+
+/* Garante que textos de utilizador ou papéis na navbar usem as variáveis certas */
+#userName {
+    color: var(--flora-main) !important;
+}
+
+#userRole {
+    color: var(--flora-muted) !important;
+}
+
+/* Força a borda do avatar a seguir o padrão verde do tema */
+#userAvatar {
+    border-color: var(--flora-green) !important;
+}
+
+/* Ícone padrão do utilizador adaptável ao tema */
+.flora-user-icon {
+    color: var(--flora-main) !important;
+    transition: color 0.2s ease;
+}
+
+.flora-user-icon:hover {
+    color: var(--flora-green) !important;
+}
+

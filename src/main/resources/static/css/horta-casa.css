@@ -1,0 +1,170 @@
+/* Layout da Página de Horta Pessoal */
+.page-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color, #1a202c);
+  margin: 0 0 4px 0;
+}
+
+.page-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted, #718096);
+  margin: 0;
+}
+
+.page-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Grid de Estatísticas */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background-color: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-card.warning {
+  border-left: 4px solid #ed8936;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted, #718096);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--flora-green, #2ecc71);
+}
+
+/* Grid de Setores */
+.section-title-wrapper h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-color, #2d3748);
+  margin: 0;
+}
+
+.sectors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.sector-card {
+  background-color: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sector-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.sector-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sector-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.sector-description {
+  font-size: 0.85rem;
+  color: var(--text-muted, #718096);
+  margin-bottom: 16px;
+}
+
+/* Lista Compacta de Plantas dentro do Setor */
+.plant-mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.plant-mini-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: var(--bg-secondary, #f7fafc);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.plant-status {
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.status-ok {
+  background-color: #c6f6d5;
+  color: #22543d;
+}
+
+.status-alert {
+  background-color: #feebc8;
+  color: #744210;
+}
+
+.sector-card-footer {
+  border-top: 1px solid var(--border-color, #edf2f7);
+  padding-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--flora-green, #2ecc71);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}

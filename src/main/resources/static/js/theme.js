@@ -1,6 +1,4 @@
-// Gerenciador de Tema (Claro / Escuro)
 document.addEventListener('DOMContentLoaded', () => {
-    // Recupera o tema salvo ou define 'dark' como padrão
     const temaSalvo = localStorage.getItem('temaPreferido') || 'dark';
     document.documentElement.setAttribute('data-bs-theme', temaSalvo);
     atualizarIconeBotao(temaSalvo);
@@ -21,8 +19,8 @@ function atualizarIconeBotao(tema) {
     if (!icone) return;
 
     if (tema === 'light') {
-        icone.className = 'bi bi-moon-fill'; // Mostra lua no modo claro para indicar que pode mudar para escuro
+        icone.className = 'bi bi-moon-fill';
     } else {
-        icone.className = 'bi bi-sun-fill';  // Mostra sol no modo escuro para indicar que pode mudar para claro
+        icone.className = 'bi bi-sun-fill';
     }
 }

@@ -20,12 +20,16 @@ document.getElementById('formLogin').addEventListener('submit', async function(e
         });
 
         if (response.ok) {
+            const usuario = await response.json();
+
+            localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+
             mensagemDiv.className = 'alert alert-success py-2 small';
             mensagemDiv.innerText = 'Login realizado com sucesso! Entrando...';
             mensagemDiv.classList.remove('d-none');
-            
+
             setTimeout(() => {
-                window.location.href = '/app.html';
+                window.location.href = 'app.html';
             }, 1500);
         } else {
             mensagemDiv.className = 'alert alert-danger py-2 small';
@@ -34,8 +38,8 @@ document.getElementById('formLogin').addEventListener('submit', async function(e
         }
     } catch (error) {
         console.error('Erro na requisição:', error);
-        mensagemDiv.className = 'alert alert-warning py-2 small';
-        mensagemDiv.innerText = 'Modo de visualização (Backend offline).';
+        mensagemDiv.className = 'alert alert-danger py-2 small';
+        mensagemDiv.innerText = 'Erro de conexão com o servidor backend.';
         mensagemDiv.classList.remove('d-none');
     }
 });
