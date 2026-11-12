@@ -2,9 +2,10 @@ package FloraLog.aep.services;
 
 import FloraLog.aep.models.PlantaModel;
 import FloraLog.aep.repositories.PlantaRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -23,156 +24,162 @@ class PlantaServiceTest {
     @InjectMocks
     private PlantaService plantaService;
 
-    private PlantaModel planta;
-
-
-    @BeforeEach
-    void setup() {
-
-        planta = new PlantaModel(
-                "Espada-de-São-Jorge",
-                "Dracaena trifasciata",
-                "Sombra",
-                "Planta resistente",
-                "Fácil",
-                "Luz Indireta",
-                "1x por semana",
-                "18°C a 30°C"
-        );
-
-        planta.setId("123");
-    }
-
-
     @Test
-    void deveListarTodasAsPlantas() {
-
-        when(plantaRepository.findAll())
-                .thenReturn(List.of(planta));
+    void deveListarBibliotecaPorUsuario() {
+        when(plantaRepository.findByUsuarioId("usuario1"))
+                .thenReturn(List.of(new PlantaModel()));
 
         List<PlantaModel> resultado =
-                plantaService.listarTodas();
+                plantaService.listarBibliotecaPorUsuario("usuario1");
 
         assertEquals(1, resultado.size());
-
-        assertEquals(
-                "Espada-de-São-Jorge",
-                resultado.get(0).getNome()
-        );
-
-        verify(plantaRepository)
-                .findAll();
+        verify(plantaRepository).findByUsuarioId("usuario1");
     }
 
+    @Test
+    void deveSalvarPlantaGerandoCodigoQuandoNaoExistir() {
+        PlantaModel planta = new PlantaModel();
+        planta.setNome("Samambaia");
+        planta.setCodigoPartilha(null);
+
+        when(plantaRepository.save(any(PlantaModel.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        PlantaModel resultado = plantaService.salvar(planta);
+
+        assertNotNull(resultado.getCodigoPartilha());
+        assertEquals(8, resultado.getCodigoPartilha().length());
+        verify(plantaRepository).save(planta);
+    }
+
+    @Test
+    void deveManterCodigoDeCompartilhamentoExistente() {
+        PlantaModel planta = new PlantaModel();
+        planta.setCodigoPartilha("ABC12345");
+
+        when(plantaRepository.save(any(PlantaModel.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        PlantaModel resultado = plantaService.salvar(planta);
+
+        assertEquals("ABC12345", resultado.getCodigoPartilha());
+        verify(plantaRepository).save(planta);
+    }
 
     @Test
     void deveBuscarPlantaPorId() {
+        PlantaModel planta = new PlantaModel();
+        when(plantaRepository.findById("1")).thenReturn(Optional.of(planta));
 
-        when(plantaRepository.findById("123"))
-                .thenReturn(Optional.of(planta));
-
-        PlantaModel resultado =
-                plantaService.buscarPorId("123");
-
-        assertEquals("123", resultado.getId());
-
-        verify(plantaRepository)
-                .findById("123");
+        assertSame(planta, plantaService.buscarPorId("1"));
     }
 
+    @Test
+    void deveLancarExcecaoAoBuscarPlantaInexistente() {
+        when(plantaRepository.findById("1")).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> plantaService.buscarPorId("1"));
+    }
 
     @Test
-    void deveLancarExcecaoQuandoPlantaNaoExiste() {
+    void deveAtualizarPlantaExistente() {
+        PlantaModel existente = new PlantaModel();
+        existente.setNome("Nome antigo");
+        existente.setFotoUrl("foto-antiga.jpg");
 
-        when(plantaRepository.findById("999"))
+        PlantaModel atualizada = new PlantaModel();
+        atualizada.setNome("Nome novo");
+        atualizada.setFotoUrl("foto-nova.jpg");
+
+        when(plantaRepository.findById("1")).thenReturn(Optional.of(existente));
+        when(plantaRepository.save(any(PlantaModel.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        PlantaModel resultado = plantaService.atualizar("1", atualizada);
+
+        assertEquals("Nome novo", resultado.getNome());
+        assertEquals("foto-nova.jpg", resultado.getFotoUrl());
+        verify(plantaRepository).save(existente);
+    }
+
+    @Test
+    void deveManterFotoAntigaQuandoNovaFotoForNula() {
+        PlantaModel existente = new PlantaModel();
+        existente.setFotoUrl("foto-antiga.jpg");
+
+        PlantaModel atualizada = new PlantaModel();
+        atualizada.setNome("Nome novo");
+        atualizada.setFotoUrl(null);
+
+        when(plantaRepository.findById("1")).thenReturn(Optional.of(existente));
+        when(plantaRepository.save(any(PlantaModel.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        PlantaModel resultado = plantaService.atualizar("1", atualizada);
+
+        assertEquals("foto-antiga.jpg", resultado.getFotoUrl());
+        verify(plantaRepository).save(existente);
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtualizarPlantaInexistente() {
+        when(plantaRepository.findById("1")).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> plantaService.atualizar("1", new PlantaModel()));
+
+        verify(plantaRepository, never()).save(any());
+    }
+
+    @Test
+    void deveExcluirPlantaExistente() {
+        when(plantaRepository.existsById("1")).thenReturn(true);
+
+        plantaService.deletar("1");
+
+        verify(plantaRepository).deleteById("1");
+    }
+
+    @Test
+    void deveLancarExcecaoAoExcluirPlantaInexistente() {
+        when(plantaRepository.existsById("1")).thenReturn(false);
+
+        assertThrows(RuntimeException.class,
+                () -> plantaService.deletar("1"));
+
+        verify(plantaRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deveImportarPlantaPorCodigo() {
+        PlantaModel original = new PlantaModel();
+        original.setNome("Orquídea");
+        original.setCodigoPartilha("ABC12345");
+
+        when(plantaRepository.findByCodigoPartilha("ABC12345"))
+                .thenReturn(Optional.of(original));
+
+        when(plantaRepository.save(any(PlantaModel.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        PlantaModel resultado =
+                plantaService.importarPorCodigo("ABC12345", "usuario2");
+
+        assertEquals("Orquídea", resultado.getNome());
+        assertEquals("usuario2", resultado.getUsuarioId());
+        assertNotEquals("ABC12345", resultado.getCodigoPartilha());
+        verify(plantaRepository).save(any(PlantaModel.class));
+    }
+
+    @Test
+    void deveLancarExcecaoAoImportarCodigoInexistente() {
+        when(plantaRepository.findByCodigoPartilha("INVALIDO"))
                 .thenReturn(Optional.empty());
 
-        assertThrows(
-                RuntimeException.class,
-                () -> plantaService.buscarPorId("999")
-        );
-    }
+        assertThrows(RuntimeException.class,
+                () -> plantaService.importarPorCodigo("INVALIDO", "usuario2"));
 
-
-    @Test
-    void deveCadastrarPlanta() {
-
-        when(plantaRepository.save(any(PlantaModel.class)))
-                .thenReturn(planta);
-
-        PlantaModel resultado =
-                plantaService.cadastrar(planta);
-
-        assertEquals(
-                "Espada-de-São-Jorge",
-                resultado.getNome()
-        );
-
-        verify(plantaRepository)
-                .save(any(PlantaModel.class));
-    }
-
-
-    @Test
-    void naoDeveCadastrarPlantaSemNome() {
-
-        planta.setNome("");
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> plantaService.cadastrar(planta)
-        );
-
-        verify(plantaRepository, never())
-                .save(any());
-    }
-
-
-    @Test
-    void deveAtualizarPlanta() {
-
-        PlantaModel novaPlanta = new PlantaModel(
-                "Cacto",
-                "Cactaceae",
-                "Suculenta",
-                "Planta do deserto",
-                "Fácil",
-                "Sol Pleno",
-                "1x por semana",
-                "20°C a 35°C"
-        );
-
-        when(plantaRepository.findById("123"))
-                .thenReturn(Optional.of(planta));
-
-        when(plantaRepository.save(any(PlantaModel.class)))
-                .thenReturn(novaPlanta);
-
-        PlantaModel resultado =
-                plantaService.atualizar(
-                        "123",
-                        novaPlanta
-                );
-
-        assertEquals(
-                "Cacto",
-                resultado.getNome()
-        );
-
-        verify(plantaRepository)
-                .save(any(PlantaModel.class));
-    }
-
-
-    @Test
-    void deveExcluirPlanta() {
-
-        when(plantaRepository.findById("123"))
-                .thenReturn(Optional.of(planta));
-
-        plantaService.excluir("123");
-
-        verify(plantaRepository)
-                .delete(planta);
+        verify(plantaRepository, never()).save(any());
     }
 }

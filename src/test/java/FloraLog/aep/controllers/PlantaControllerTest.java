@@ -2,177 +2,172 @@ package FloraLog.aep.controllers;
 
 import FloraLog.aep.models.PlantaModel;
 import FloraLog.aep.services.PlantaService;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import tools.jackson.databind.ObjectMapper;
-
 import java.util.List;
 
+import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-
-@ExtendWith(MockitoExtension.class)
 class PlantaControllerTest {
 
-    @Mock
     private PlantaService plantaService;
+    private MockMvc mockMvc;
 
-    @InjectMocks
-    private PlantaController plantaController;
+    @BeforeEach
+    void configurar() {
+        plantaService = mock(PlantaService.class);
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+        PlantaController controller = new PlantaController();
 
-    private MockMvc criarMockMvc() {
-        return MockMvcBuilders
-                .standaloneSetup(plantaController)
+        ReflectionTestUtils.setField(controller, "plantaService", plantaService);
+
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(controller)
                 .build();
     }
 
-    private PlantaModel criarPlanta() {
-
-        PlantaModel planta = new PlantaModel(
-                "Espada-de-São-Jorge",
-                "Dracaena trifasciata",
-                "Sombra",
-                "Planta resistente e fácil de cuidar",
-                "Fácil",
-                "Luz Indireta",
-                "1x por semana",
-                "18°C a 30°C"
-        );
-
-        planta.setId("123");
-
-        return planta;
-    }
-
-
     @Test
-    void deveListarTodasAsPlantas() throws Exception {
+    void deveListarBibliotecaDoUsuario() throws Exception {
+        when(plantaService.listarBibliotecaPorUsuario("usuario1"))
+                .thenReturn(List.of());
 
-        PlantaModel planta = criarPlanta();
+        mockMvc.perform(get("/api/biblioteca/usuario/usuario1"))
+                .andExpect(status().isOk());
 
-        when(plantaService.listarTodas())
-                .thenReturn(List.of(planta));
-
-        MockMvc mockMvc = criarMockMvc();
-
-        mockMvc.perform(get("/api/plantas"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value("123"))
-                .andExpect(jsonPath("$[0].nome").value("Espada-de-São-Jorge"));
-
-        verify(plantaService).listarTodas();
+        verify(plantaService).listarBibliotecaPorUsuario("usuario1");
     }
-
 
     @Test
     void deveBuscarPlantaPorId() throws Exception {
+        when(plantaService.buscarPorId("1"))
+                .thenReturn(new PlantaModel());
 
-        PlantaModel planta = criarPlanta();
+        mockMvc.perform(get("/api/biblioteca/1"))
+                .andExpect(status().isOk());
 
-        when(plantaService.buscarPorId("123"))
-                .thenReturn(planta);
-
-        MockMvc mockMvc = criarMockMvc();
-
-        mockMvc.perform(get("/api/plantas/123"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value("123"))
-                .andExpect(jsonPath("$.nome").value("Espada-de-São-Jorge"));
-
-        verify(plantaService).buscarPorId("123");
+        verify(plantaService).buscarPorId("1");
     }
-
 
     @Test
-    void deveCadastrarPlanta() throws Exception {
+    void deveRetornar404AoBuscarPlantaInexistente() throws Exception {
+        when(plantaService.buscarPorId("1"))
+                .thenThrow(new RuntimeException("Planta não encontrada"));
 
-        PlantaModel planta = criarPlanta();
-
-        when(plantaService.cadastrar(any(PlantaModel.class)))
-                .thenReturn(planta);
-
-        MockMvc mockMvc = criarMockMvc();
-
-        mockMvc.perform(
-                        post("/api/plantas")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(planta))
-                )
-                .andExpect(status().isCreated())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value("123"))
-                .andExpect(jsonPath("$.nome").value("Espada-de-São-Jorge"));
-
-        verify(plantaService).cadastrar(any(PlantaModel.class));
+        mockMvc.perform(get("/api/biblioteca/1"))
+                .andExpect(status().isNotFound());
     }
 
+    @Test
+    void deveSalvarPlanta() throws Exception {
+        when(plantaService.salvar(any(PlantaModel.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        mockMvc.perform(post("/api/biblioteca")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "nome": "Samambaia",
+                                    "usuarioId": "usuario1"
+                                }
+                                """))
+                .andExpect(status().isCreated());
+
+        verify(plantaService).salvar(any(PlantaModel.class));
+    }
+
+    @Test
+    void deveSalvarListaDePlantasEmLote() throws Exception {
+        when(plantaService.salvar(any(PlantaModel.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        mockMvc.perform(post("/api/biblioteca/lote")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                [
+                                    {"nome": "Samambaia"},
+                                    {"nome": "Orquídea"}
+                                ]
+                                """))
+                .andExpect(status().isCreated());
+
+        verify(plantaService, times(2)).salvar(any(PlantaModel.class));
+    }
 
     @Test
     void deveAtualizarPlanta() throws Exception {
+        when(plantaService.atualizar(eq("1"), any(PlantaModel.class)))
+                .thenReturn(new PlantaModel());
 
-        PlantaModel planta = criarPlanta();
+        mockMvc.perform(put("/api/biblioteca/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "nome": "Planta Atualizada"
+                                }
+                                """))
+                .andExpect(status().isOk());
 
-        when(plantaService.atualizar(
-                eq("123"),
-                any(PlantaModel.class)
-        )).thenReturn(planta);
-
-        MockMvc mockMvc = criarMockMvc();
-
-        mockMvc.perform(
-                        put("/api/plantas/123")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(planta))
-                )
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value("123"))
-                .andExpect(jsonPath("$.nome").value("Espada-de-São-Jorge"));
-
-        verify(plantaService).atualizar(
-                eq("123"),
-                any(PlantaModel.class)
-        );
+        verify(plantaService).atualizar(eq("1"), any(PlantaModel.class));
     }
 
+    @Test
+    void deveRetornar404AoAtualizarPlantaInexistente() throws Exception {
+        when(plantaService.atualizar(eq("1"), any(PlantaModel.class)))
+                .thenThrow(new RuntimeException("Planta não encontrada"));
+
+        mockMvc.perform(put("/api/biblioteca/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"nome": "Atualizada"}
+                                """))
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     void deveExcluirPlanta() throws Exception {
-
-        doNothing().when(plantaService).excluir("123");
-
-        MockMvc mockMvc = criarMockMvc();
-
-        mockMvc.perform(delete("/api/plantas/123"))
+        mockMvc.perform(delete("/api/biblioteca/1"))
                 .andExpect(status().isNoContent());
 
-        verify(plantaService).excluir("123");
+        verify(plantaService).deletar("1");
+    }
+
+    @Test
+    void deveRetornar404AoExcluirPlantaInexistente() throws Exception {
+        doThrow(new RuntimeException("Planta não encontrada"))
+                .when(plantaService).deletar("1");
+
+        mockMvc.perform(delete("/api/biblioteca/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deveImportarPlantaPorCodigo() throws Exception {
+        when(plantaService.importarPorCodigo("ABC12345", "usuario1"))
+                .thenReturn(new PlantaModel());
+
+        mockMvc.perform(post("/api/biblioteca/importar/ABC12345")
+                        .param("usuarioId", "usuario1"))
+                .andExpect(status().isCreated());
+
+        verify(plantaService).importarPorCodigo("ABC12345", "usuario1");
+    }
+
+    @Test
+    void deveRetornar404AoImportarCodigoInexistente() throws Exception {
+        when(plantaService.importarPorCodigo("INVALIDO", "usuario1"))
+                .thenThrow(new RuntimeException("Espécie não encontrada"));
+
+        mockMvc.perform(post("/api/biblioteca/importar/INVALIDO")
+                        .param("usuarioId", "usuario1"))
+                .andExpect(status().isNotFound());
     }
 }
