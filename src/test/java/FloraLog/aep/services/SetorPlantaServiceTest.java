@@ -1,7 +1,6 @@
 package FloraLog.aep.services;
 
 import FloraLog.aep.models.SetorPlantaModel;
-import FloraLog.aep.repositories.SetorPlantaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,7 +1,8 @@
-const API_URL = 'http://localhost:8080/api/biblioteca';
-
 const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
 const USUARIO_ID_LOGADO = usuarioLogado ? (usuarioLogado.id || usuarioLogado.usuarioId) : null;
+
+// Nova URL base alinhada ao padrão aninhado do utilizador
+const API_URL = `http://localhost:8080/api/usuarios/${USUARIO_ID_LOGADO}/biblioteca`;
 
 let listaPlantasGlobal = [];
 
@@ -20,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     const btnImportar = document.getElementById('btnConfirmarImportacao') || document.getElementById('btnImportar');
     if (btnImportar) {
         btnImportar.addEventListener('click', importarPlantaPorCodigoUnico);
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function carregarPlantas() {
     try {
-        const response = await fetch(`${API_URL}/usuario/${USUARIO_ID_LOGADO}`);
+        const response = await fetch(API_URL);
         if (!response.ok) throw new Error('Erro ao buscar plantas do servidor.');
 
         listaPlantasGlobal = await response.json();
@@ -112,7 +112,7 @@ async function importarPlantaPorCodigoUnico() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/importar/${codigo}?usuarioId=${USUARIO_ID_LOGADO}`, {
+        const response = await fetch(`${API_URL}/importar/${codigo}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -144,7 +144,7 @@ async function salvarPlanta() {
     }
 
     const dadosPlanta = {
-        usuarioId: USUARIO_ID_LOGADO,
+        id: id || undefined,
         nome: document.getElementById('nomePopular').value,
         nomeCientifico: document.getElementById('nomeCientifico').value,
         categoria: document.getElementById('categoria').value,

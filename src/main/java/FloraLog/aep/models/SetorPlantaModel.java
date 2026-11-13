@@ -1,25 +1,34 @@
 package FloraLog.aep.models;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-@Document(collection = "setor_plantas")
 public class SetorPlantaModel {
 
-    @Id
     private String id;
-
-    private String setorId;
-    private String plantaId;
-    private String usuarioId;
+    private String plantaBibliotecaId;
+    private String nome;
+    private String nomeCientifico;
+    private String fotoUrl;
+    private String iluminacao;
+    private String rega;
+    private String temperatura;
+    private List<TarefaModel> tarefas = new ArrayList<>();
 
     public SetorPlantaModel() {
+        this.id = UUID.randomUUID().toString();
     }
 
-    public SetorPlantaModel(String setorId, String plantaId, String usuarioId) {
-        this.setorId = setorId;
-        this.plantaId = plantaId;
-        this.usuarioId = usuarioId;
+    public SetorPlantaModel(String plantaBibliotecaId, String nome, String nomeCientifico, String fotoUrl, String iluminacao, String rega, String temperatura) {
+        this.id = UUID.randomUUID().toString();
+        this.plantaBibliotecaId = plantaBibliotecaId;
+        this.nome = nome;
+        this.nomeCientifico = nomeCientifico;
+        this.fotoUrl = fotoUrl;
+        this.iluminacao = iluminacao;
+        this.rega = rega;
+        this.temperatura = temperatura;
     }
 
     public String getId() {
@@ -30,27 +39,67 @@ public class SetorPlantaModel {
         this.id = id;
     }
 
-    public String getSetorId() {
-        return setorId;
+    public String getPlantaBibliotecaId() {
+        return plantaBibliotecaId;
     }
 
-    public void setSetorId(String setorId) {
-        this.setorId = setorId;
+    public void setPlantaBibliotecaId(String plantaBibliotecaId) {
+        this.plantaBibliotecaId = plantaBibliotecaId;
     }
 
-    public String getPlantaId() {
-        return plantaId;
+    public String getNome() {
+        return nome;
     }
 
-    public void setPlantaId(String plantaId) {
-        this.plantaId = plantaId;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getUsuarioId() {
-        return usuarioId;
+    public String getNomeCientifico() {
+        return nomeCientifico;
     }
 
-    public void setUsuarioId(String usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setNomeCientifico(String nomeCientifico) {
+        this.nomeCientifico = nomeCientifico;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
+
+    public String getIluminacao() {
+        return iluminacao;
+    }
+
+    public void setIluminacao(String iluminacao) {
+        this.iluminacao = iluminacao;
+    }
+
+    public String getRega() {
+        return rega;
+    }
+
+    public void setRega(String rega) {
+        this.rega = rega;
+    }
+
+    public String getTemperatura() {
+        return temperatura;
+    }
+
+    public void setTemperatura(String temperatura) {
+        this.temperatura = temperatura;
+    }
+
+    public List<TarefaModel> getTarefas() {
+        return tarefas;
+    }
+
+    public void setTarefas(List<TarefaModel> tarefas) {
+        this.tarefas = tarefas;
     }
 }

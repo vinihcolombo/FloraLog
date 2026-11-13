@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🌿%3C/text%3E%3C/svg%3E">
-    <title>FloraWeb</title>
+    <title>FloraWeb — Painel Principal</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="css/layout.css">
 
     <script>
-        // Aplica o estado da sidebar instantaneamente antes de renderizar o corpo da página
         if (localStorage.getItem('sidebarMinimizada') === 'true') {
             document.documentElement.classList.add('sidebar-pre-minimizada');
         }
@@ -62,11 +61,10 @@
 <!-- CORPO PRINCIPAL COM SIDEBAR E CONTEÚDO -->
 <div class="container-fluid flex-grow-1 d-flex p-0">
 
-    <!-- WIDTH FIXO REMOVIDO DAQUI -->
     <aside id="sidebar" class="bg-flora-dark border-end border-flora-green p-3 d-flex flex-column transition-sidebar" style="min-height: calc(100vh - 65px);">
         <ul class="nav nav-pills flex-column gap-1 mb-auto">
             <li class="nav-item">
-                <a href="" class="nav-link active fw-bold d-flex align-items-center gap-2 py-2">
+                <a href="app.html" class="nav-link active fw-bold d-flex align-items-center gap-2 py-2">
                     <i class="bi bi-speedometer2 fs-5"></i>
                     <span class="sidebar-text">Início / Painel</span>
                 </a>
@@ -74,33 +72,20 @@
             <li class="nav-item">
                 <a href="biblioteca.html" class="nav-link d-flex align-items-center gap-2 py-2">
                     <i class="bi bi-journal-richtext fs-5 text-flora-green"></i>
-                    <span class="sidebar-text">Biblioteca Pessoal</span>
+                    <span class="sidebar-text">Plantas Cadastradas</span>
                 </a>
             </li>
             <li><hr class="border-flora-green opacity-25 my-2"></li>
             <li class="px-2 text-flora-green extra-small fw-bold text-uppercase sidebar-text mb-1">
-                Hortas
+                Cultivo
             </li>
             <li>
-                <a href="horta-casa.html" class="nav-link d-flex align-items-center gap-2 py-2" data-horta-tipo="pessoal">
+                <a href="horta-casa.html" class="nav-link d-flex align-items-center gap-2 py-2">
                     <i class="bi bi-house-heart fs-5 text-flora-green"></i>
-                    <span class="sidebar-text">Horta Pessoal (Casa)</span>
-                </a>
-            </li>
-            <li>
-                <a href="hortas-privadas.html" class="nav-link d-flex align-items-center gap-2 py-2">
-                    <i class="bi bi-shield-lock fs-5 text-flora-green"></i>
-                    <span class="sidebar-text">Hortas Privadas</span>
-                </a>
-            </li>
-            <li>
-                <a href="hortas-comunitarias.html" class="nav-link d-flex align-items-center gap-2 py-2">
-                    <i class="bi bi-people fs-5 text-flora-green"></i>
-                    <span class="sidebar-text">Hortas Comunitárias</span>
+                    <span class="sidebar-text">Setores (Casa)</span>
                 </a>
             </li>
         </ul>
-
     </aside>
 
     <main class="flex-grow-1 p-4 bg-flora-black overflow-y-auto">
@@ -113,44 +98,37 @@
                 </div>
             </div>
 
+            <!-- CARDS DE MÉTRICAS -->
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <div class="card bg-flora-dark border border-flora-green p-3 rounded-3 shadow-sm">
-                        <span class="text-flora-muted small">Total de Hortas</span>
-                        <h3 class="fw-bold text-flora-green mb-0 mt-1" id="valHortas">--</h3>
+                        <span class="text-flora-muted small">Total de Pendências</span>
+                        <h3 class="fw-bold text-warning mb-0 mt-1" id="valPendencias">0</h3>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card bg-flora-dark border border-flora-green p-3 rounded-3 shadow-sm">
-                        <span class="text-flora-muted small">Total de Lotes</span>
-                        <h3 class="fw-bold text-flora-green mb-0 mt-1" id="valLotes">--</h3>
+                        <span class="text-flora-muted small">Total de Setores</span>
+                        <h3 class="fw-bold text-flora-green mb-0 mt-1" id="valSetores">0</h3>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card bg-flora-dark border border-flora-green p-3 rounded-3 shadow-sm">
-                        <span class="text-flora-muted small">Plantas Registradas</span>
-                        <h3 class="fw-bold text-flora-green mb-0 mt-1" id="valPlantas">--</h3>
+                        <span class="text-flora-muted small">Plantas Cadastradas</span>
+                        <h3 class="fw-bold text-flora-green mb-0 mt-1" id="valPlantas">0</h3>
                     </div>
                 </div>
             </div>
 
             <div class="card bg-flora-dark border border-flora-green p-4 rounded-3 shadow-sm mb-4">
                 <h5 class="fw-bold text-flora-main mb-3 d-flex align-items-center gap-2 border-bottom border-flora-green pb-2">
-                    <i class="bi bi-bell text-warning"></i> Cuidados Pendentes
+                    <i class="bi bi-bell text-warning"></i> Resumo de Atividades
                 </h5>
                 <div class="list-group list-group-flush bg-transparent gap-2" id="listaTarefas">
                     <div class="list-group-item bg-flora-card border border-flora-green rounded p-3 d-flex justify-content-between align-items-center shadow-sm">
                         <div>
-                            <h6 class="mb-1 fw-bold text-flora-green">Regar Tomateiro</h6>
-                            <p class="mb-0 text-flora-muted small">Última rega há 3 dias • Frequência ideal: 2 em 2 dias</p>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-success border-flora-green text-flora-green">
-                                <i class="bi bi-check-lg"></i> Concluir
-                            </button>
-                            <a href="#" class="btn btn-sm btn-outline-secondary text-flora-muted border-flora-green">
-                                <i class="bi bi-arrow-right-circle"></i> Ir para a horta
-                            </a>
+                            <h6 class="mb-1 fw-bold text-flora-green">Gestão de Cultivo Ativa</h6>
+                            <p class="mb-0 text-flora-muted small">Aceda à aba de Setores (Casa) para gerenciar regas e tarefas detalhadas por planta.</p>
                         </div>
                     </div>
                 </div>
@@ -166,17 +144,5 @@
 <script src="js/sidebar.js"></script>
 <script src="js/navbar.js"></script>
 <script src="js/app.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        fetch('http://localhost:8080/api/dashboard/resumo')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('valHortas').innerText = data.totalHortas || 0;
-                document.getElementById('valLotes').innerText = data.totalLotes || 0;
-                document.getElementById('valPlantas').innerText = data.totalPlantas || 0;
-            })
-            .catch(error => console.error('Erro ao carregar resumo:', error));
-    });
-</script>
 </body>
 </html>

@@ -1,16 +1,10 @@
 package FloraLog.aep.models;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.UUID;
 
-@Document(collection = "plantas")
 public class PlantaModel {
 
-    @Id
     private String id;
-
-    private String usuarioId;
     private String nome;
     private String nomeCientifico;
     private String categoria;
@@ -23,11 +17,11 @@ public class PlantaModel {
     private String codigoPartilha;
 
     public PlantaModel() {
+        this.id = UUID.randomUUID().toString().substring(0, 8);
         this.codigoPartilha = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     public PlantaModel(
-            String usuarioId,
             String nome,
             String nomeCientifico,
             String categoria,
@@ -38,7 +32,7 @@ public class PlantaModel {
             String temperatura,
             String fotoUrl
     ) {
-        this.usuarioId = usuarioId;
+        this.id = UUID.randomUUID().toString().substring(0, 8);
         this.nome = nome;
         this.nomeCientifico = nomeCientifico;
         this.categoria = categoria;
@@ -57,14 +51,6 @@ public class PlantaModel {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(String usuarioId) {
-        this.usuarioId = usuarioId;
     }
 
     public String getNome() {

@@ -2,6 +2,8 @@ package FloraLog.aep.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "usuarios")
 public class UsuarioModel {
@@ -14,6 +16,10 @@ public class UsuarioModel {
     private String senha;
     private String avatarUrl;
     private PerfilUsuario perfil;
+
+    // Árvore NoSQL centralizada no Utilizador
+    private List<PlantaModel> bibliotecaPlantas = new ArrayList<>();
+    private List<SetorModel> setores = new ArrayList<>();
 
     public enum PerfilUsuario {
         DONO,
@@ -78,5 +84,21 @@ public class UsuarioModel {
 
     public void setPerfil(PerfilUsuario perfil) {
         this.perfil = perfil;
+    }
+
+    public List<PlantaModel> getBibliotecaPlantas() {
+        return bibliotecaPlantas;
+    }
+
+    public void setBibliotecaPlantas(List<PlantaModel> bibliotecaPlantas) {
+        this.bibliotecaPlantas = bibliotecaPlantas;
+    }
+
+    public List<SetorModel> getSetores() {
+        return setores;
+    }
+
+    public void setSetores(List<SetorModel> setores) {
+        this.setores = setores;
     }
 }

@@ -1,7 +1,6 @@
 package FloraLog.aep.controllers;
 
 import FloraLog.aep.models.SetorPlantaModel;
-import FloraLog.aep.services.SetorPlantaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

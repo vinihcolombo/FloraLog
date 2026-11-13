@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🌿%3C/text%3E%3C/svg%3E">
-    <title>FloraWeb — Horta Pessoal (Casa)</title>
+    <title>FloraWeb — Setores (Casa)</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -77,24 +77,12 @@
             </li>
             <li><hr class="border-flora-green opacity-25 my-2"></li>
             <li class="px-2 text-flora-green extra-small fw-bold text-uppercase sidebar-text mb-1">
-                Hortas
+                Cultivo
             </li>
             <li>
                 <a href="horta-casa.html" class="nav-link active fw-bold d-flex align-items-center gap-2 py-2">
                     <i class="bi bi-house-heart fs-5"></i>
-                    <span class="sidebar-text">Horta Pessoal (Casa)</span>
-                </a>
-            </li>
-            <li>
-                <a href="hortas-privadas.html" class="nav-link d-flex align-items-center gap-2 py-2">
-                    <i class="bi bi-shield-lock fs-5 text-flora-green"></i>
-                    <span class="sidebar-text">Hortas Privadas</span>
-                </a>
-            </li>
-            <li>
-                <a href="hortas-comunitarias.html" class="nav-link d-flex align-items-center gap-2 py-2">
-                    <i class="bi bi-people fs-5 text-flora-green"></i>
-                    <span class="sidebar-text">Hortas Comunitárias</span>
+                    <span class="sidebar-text">Setores (Casa)</span>
                 </a>
             </li>
         </ul>
@@ -107,7 +95,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <div>
                     <h2 class="fw-bold text-flora-main">
-                        <i class="bi bi-house-heart-fill me-2 text-flora-green"></i>Horta Pessoal (Casa)
+                        <i class="bi bi-house-heart-fill me-2 text-flora-green"></i>Setores (Casa)
                     </h2>
                     <p class="text-flora-muted small mb-0">Gerencie os setores de cultivo, regas e a saúde das suas plantas domésticas.</p>
                 </div>
@@ -124,7 +112,7 @@
                 <div class="col-md-6">
                     <div class="card bg-flora-dark border border-flora-green shadow-sm p-3 rounded-3">
                         <span class="text-flora-muted small">Total de Plantas</span>
-                        <h3 class="text-flora-green fw-bold mb-0 mt-1">12</h3>
+                        <h3 id="totalPlantasGeral" class="text-flora-green fw-bold mb-0 mt-1">0</h3>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -192,13 +180,14 @@
 
         try {
             const usuarioObj = JSON.parse(usuarioStr);
-            return usuarioObj.id || usuarioObj._id;
+            return usuarioObj.id || usuarioObj._id || usuarioObj.usuarioId;
         } catch (e) {
             return usuarioStr;
         }
     }
 
     const usuarioLogadoId = obterUsuarioLogadoId();
+    const API_URL = `http://localhost:8080/api/usuarios/${usuarioLogadoId}/setores`;
 
     document.addEventListener("DOMContentLoaded", () => {
         if (!usuarioLogadoId) {
@@ -211,14 +200,24 @@
 
     async function carregarSetores() {
         try {
-            const response = await fetch(`/api/setores?usuarioId=${usuarioLogadoId}`);
+            const response = await fetch(API_URL);
             if (!response.ok) throw new Error('Erro ao buscar setores');
 
             const setores = await response.json();
             const grid = document.getElementById('gridSetores');
-            const contador = document.getElementById('totalSetores');
+            const contadorSetores = document.getElementById('totalSetores');
+            const contadorPlantas = document.getElementById('totalPlantasGeral');
 
-            contador.textContent = setores.length;
+            contadorSetores.textContent = setores.length;
+
+            let totalPlantas = 0;
+            setores.forEach(s => {
+                if (s.plantas && Array.isArray(s.plantas)) {
+                    totalPlantas += s.plantas.length;
+                }
+            });
+            if (contadorPlantas) contadorPlantas.textContent = totalPlantas;
+
             grid.innerHTML = '';
 
             if (setores.length === 0) {
@@ -231,12 +230,27 @@
             }
 
             setores.forEach(setor => {
+                const qtdPlantasSetor = setor.plantas ? setor.plantas.length : 0;
+
+                let qtdPendenciasSetor = 0;
+                if (setor.plantas && Array.isArray(setor.plantas)) {
+                    setor.plantas.forEach(plantaSetor => {
+                        if (plantaSetor.tarefas && Array.isArray(plantaSetor.tarefas)) {
+                            qtdPendenciasSetor += plantaSetor.tarefas.filter(t => !t.concluida).length;
+                        }
+                    });
+                }
+
                 grid.innerHTML += `
                     <div class="col">
                         <div class="card bg-flora-dark border border-flora-green shadow-sm rounded-3 h-100 d-flex flex-column justify-content-between p-3">
                             <div>
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <h5 class="fw-bold text-flora-main m-0"><i class="bi bi-flower2 me-1 text-flora-green"></i> ${setor.nome}</h5>
+                                    <div class="d-flex gap-1">
+                                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small">${qtdPlantasSetor} planta(s)</span>
+                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle small">${qtdPendenciasSetor} pendência(s)</span>
+                                    </div>
                                 </div>
                                 <p class="text-flora-muted small mb-3">${setor.descricao || 'Sem descrição informada.'}</p>
                             </div>
@@ -250,24 +264,25 @@
                 `;
             });
         } catch (error) {
-            console.error("Erro:", error);
+            console.error("Erro ao carregar setores:", error);
         }
     }
 
     async function salvarSetor(event) {
         event.preventDefault();
 
-        const nome = document.getElementById('nomeSetor').value;
-        const descricao = document.getElementById('descricaoSetor').value;
+        const nome = document.getElementById('nomeSetor').value.trim();
+        const descricao = document.getElementById('descricaoSetor').value.trim();
 
-        const dadosSetor = {
-            nome: nome,
-            descricao: descricao,
-            usuarioId: usuarioLogadoId
-        };
+        if (!nome) {
+            alert('Por favor, informe o nome do setor.');
+            return;
+        }
+
+        const dadosSetor = { nome, descricao };
 
         try {
-            const response = await fetch('/api/setores', {
+            const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dadosSetor)
@@ -276,14 +291,17 @@
             if (response.ok) {
                 document.getElementById('formSetor').reset();
                 const modalEl = document.getElementById('modalSetor');
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                modal.hide();
+                const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+                if (modal) modal.hide();
+
                 carregarSetores();
             } else {
-                alert('Erro ao salvar o setor.');
+                const erroTexto = await response.text();
+                alert('Erro ao salvar o setor: ' + (erroTexto || 'Verifique os dados.'));
             }
         } catch (error) {
             console.error("Erro ao cadastrar setor:", error);
+            alert('Erro de conexão com o servidor backend.');
         }
     }
 </script>

@@ -1,25 +1,24 @@
 package FloraLog.aep.models;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-@Document(collection = "setores")
 public class SetorModel {
 
-    @Id
     private String id;
-
     private String nome;
     private String descricao;
-    private String usuarioId;
+    private List<SetorPlantaModel> plantas = new ArrayList<>();
 
     public SetorModel() {
+        this.id = UUID.randomUUID().toString();
     }
 
-    public SetorModel(String nome, String descricao, String usuarioId) {
+    public SetorModel(String nome, String descricao) {
+        this.id = UUID.randomUUID().toString();
         this.nome = nome;
         this.descricao = descricao;
-        this.usuarioId = usuarioId;
     }
 
     public String getId() {
@@ -46,11 +45,11 @@ public class SetorModel {
         this.descricao = descricao;
     }
 
-    public String getUsuarioId() {
-        return usuarioId;
+    public List<SetorPlantaModel> getPlantas() {
+        return plantas;
     }
 
-    public void setUsuarioId(String usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setPlantas(List<SetorPlantaModel> plantas) {
+        this.plantas = plantas;
     }
 }
