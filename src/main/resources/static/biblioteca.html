@@ -115,6 +115,8 @@
                     <!-- Input de Pesquisa -->
                     <div class="col-lg-8">
                         <div class="input-group">
+                            <!-- Label invisível para acessibilidade (Resolve o aviso do Sonar) -->
+                            <label for="inputBusca" class="visually-hidden">Pesquisar por nome popular, científico ou categoria</label>
                             <span class="input-group-text bg-flora-black border-flora-green text-flora-green">
                                 <i class="bi bi-search"></i>
                             </span>
@@ -124,6 +126,8 @@
 
                     <!-- Select Nativo Padrão -->
                     <div class="col-lg-4">
+                        <!-- Label invisível para acessibilidade (Resolve o aviso do Sonar) -->
+                        <label for="selectFiltroDificuldade" class="visually-hidden">Filtrar por Dificuldade</label>
                         <select id="selectFiltroDificuldade" class="form-select bg-flora-black border-flora-green text-flora-main shadow-none" onchange="filtrarPlantas()">
                             <option value="">Filtrar por Dificuldade (Todas)</option>
                             <option value="Fácil">Fácil</option>

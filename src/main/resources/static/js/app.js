@@ -11,18 +11,18 @@ if (!USUARIO_ID_LOGADO) {
 
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('gridSetores') || document.getElementById('gridPlantas')) {
-        carregarSetores();
+        void carregarSetores();
     }
 
     const formSetor = document.getElementById('formSetor');
     if (formSetor) {
         formSetor.addEventListener('submit', function(event) {
             event.preventDefault();
-            salvarSetor();
+            void salvarSetor();
         });
     }
 
-    carregarResumoDashboard();
+    void carregarResumoDashboard();
 });
 
 async function carregarResumoDashboard() {
@@ -129,7 +129,7 @@ async function concluirTarefaDireto(setorId, plantaId, tarefaId) {
         });
 
         if (response.ok) {
-            carregarResumoDashboard(); // Atualiza os contadores e a lista instantaneamente
+            void carregarResumoDashboard(); // Atualiza os contadores e a lista instantaneamente
         } else {
             alert('Erro ao concluir a tarefa.');
         }
@@ -199,8 +199,8 @@ async function salvarSetor() {
                 const modal = bootstrap.Modal.getInstance(modalElement);
                 if (modal) modal.hide();
             }
-            carregarSetores();
-            carregarResumoDashboard();
+            void carregarSetores();
+            void carregarResumoDashboard();
         } else {
             alert('Erro ao salvar setor.');
         }
@@ -214,8 +214,8 @@ async function confirmarExclusaoSetor(id) {
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (response.ok) {
-                carregarSetores();
-                carregarResumoDashboard();
+                void carregarSetores();
+                void carregarResumoDashboard();
             }
         } catch (error) {
             console.error('Erro ao excluir setor:', error);
