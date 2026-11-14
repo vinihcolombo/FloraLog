@@ -10,4 +10,9 @@ class AepApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void deveIniciarAplicacao() {
+		AepApplication.main(new String[]{"--server.port=0"});
+	}
+
 }

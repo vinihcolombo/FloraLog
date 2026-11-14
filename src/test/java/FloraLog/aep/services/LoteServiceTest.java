@@ -149,4 +149,40 @@ class LoteServiceTest {
 
         verify(loteRepository).delete(lote);
     }
+
+    @Test
+    void naoDeveCadastrarLoteComNomeNulo() {
+        LoteModel lote = new LoteModel();
+        lote.setHortaId("horta1");
+        lote.setTitularId("usuario1");
+
+        assertThrows(RuntimeException.class,
+                () -> loteService.cadastrar(lote));
+
+        verify(loteRepository, never()).save(any());
+    }
+
+    @Test
+    void naoDeveCadastrarLoteComHortaNula() {
+        LoteModel lote = new LoteModel();
+        lote.setNome("Lote A");
+        lote.setTitularId("usuario1");
+
+        assertThrows(RuntimeException.class,
+                () -> loteService.cadastrar(lote));
+
+        verify(loteRepository, never()).save(any());
+    }
+
+    @Test
+    void naoDeveCadastrarLoteComTitularNulo() {
+        LoteModel lote = new LoteModel();
+        lote.setNome("Lote A");
+        lote.setHortaId("horta1");
+
+        assertThrows(RuntimeException.class,
+                () -> loteService.cadastrar(lote));
+
+        verify(loteRepository, never()).save(any());
+    }
 }

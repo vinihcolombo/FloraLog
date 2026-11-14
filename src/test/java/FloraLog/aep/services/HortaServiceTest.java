@@ -121,4 +121,15 @@ class HortaServiceTest {
 
         verify(hortaRepository).delete(horta);
     }
+
+    @Test
+    void naoDeveCadastrarHortaComNomeNulo() {
+        HortaModel horta = new HortaModel();
+        horta.setCapacidadeMaximaLotes(10);
+
+        assertThrows(RuntimeException.class,
+                () -> hortaService.cadastrar(horta));
+
+        verify(hortaRepository, never()).save(any());
+    }
 }
